@@ -3,10 +3,10 @@ import SearchInputButton from "@/components/common/search-input-button";
 
 const SearchSection = () => {
   return (
-    <div className="">
-      <div className="flex justify-between mt-2">
+    <div>
+      <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <SearchFilter />
-        <div className="w-full max-w-xs space-y-2 ">
+        <div className="w-full sm:max-w-xs">
           <SearchInputButton />
         </div>
       </div>

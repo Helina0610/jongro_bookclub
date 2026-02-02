@@ -10,17 +10,17 @@ type BookItemType = {
 const BookItem = ({ book }: BookItemType) => {
   const { title, coverURL, genre, writer, bookId } = book;
   return (
-    <Card>
+    <Card key={book.bookId} className="w-full transition hover:shadow-md p-2">
       <a href={`/books/${bookId}`}>
-        <CardContent className="flex justify-center">
-          <div className="relative w-40 aspect-2/3 overflow-hidden rounded">
+        <CardContent className="p-2">
+          <div className="relative w-full overflow-hidden rounded-md aspect-3/2 sm:aspect-2/3">
             <Image src={coverURL} alt={title} fill className="object-cover" />
           </div>
         </CardContent>
-        <CardFooter>
-          <div className="text-sm space-y-1">
-            <div className="font-medium">{title}</div>
-            <div className="text-muted-foreground">{writer}</div>
+        <CardFooter className="">
+          <div className="space-y-1 text-start">
+            <div className="text-sm font-medium">{title}</div>
+            <div className="text-xs text-muted-foreground">{writer}</div>
             <div className="text-xs text-muted-foreground">{genre}</div>
           </div>
         </CardFooter>
