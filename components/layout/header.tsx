@@ -17,7 +17,7 @@ const HeaderSection = () => {
             </div>
             <div>
               <Button variant={"ghost"} size={"lg"}>
-                <Link href="/books">Wish List</Link>
+                <Link href="/wishlist">Wish List</Link>
               </Button>
             </div>
             <div>

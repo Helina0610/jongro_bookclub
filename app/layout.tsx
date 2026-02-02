@@ -25,11 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="mx-auto size-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
-        <header>
-          <HeaderSection />
-        </header>
-        {children}
+      <body className="min-h-screen">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+          <header>
+            <HeaderSection />
+          </header>
+          {children}
+        </div>
       </body>
     </html>
   );
