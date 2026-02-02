@@ -3,10 +3,8 @@ import type { BookEntity } from "@/app/books/page";
 import BookList from "@/components/books/books-list";
 import SearchSection from "@/components/books/search-section";
 import SectionTitle from "@/components/common/section-title";
-import { Card, CardContent, CardFooter } from "../ui/card";
-import BookItem from "./books-item";
-
-type BookSectionType = {
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+export type BookSectionType = {
   bookList: BookEntity[];
 };
 

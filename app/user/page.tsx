@@ -1,14 +1,8 @@
 import React from "react";
+import UserSection from "@/components/user/user-section";
 
 const UserPage = () => {
-  return (
-    <div>
-      {/* 프로파일 */}
-      <div></div>
-      {/* 독서활동 */}
-      <div></div>
-    </div>
-  );
+  return <UserSection />;
 };
 
 export default UserPage;
