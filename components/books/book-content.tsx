@@ -88,7 +88,7 @@ const BookContent = ({ book }: BookContent) => {
         </Avatar>
 
         {/* Comment Body */}
-        <div className="flex-1 rounded-lg border bg-muted/40 px-4 py-3">
+        <div className="flex-1 rounded-lg border px-4 py-3">
           {/* Header */}
           <div className="flex items-start justify-between">
             <div className="text-sm font-medium">사용자명</div>
