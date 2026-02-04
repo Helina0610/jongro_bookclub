@@ -2,7 +2,8 @@ import { Clock, MapPin } from "lucide-react";
 import type { BookEntity } from "@/app/books/page";
 import BookList from "../books/books-list";
 import SectionTitle from "../common/section-title";
-import { Card, CardContent } from "../ui/card";
+import TanstackTable from "../common/tanstack-table";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 type DashboardSectionType = {
   bookList: BookEntity[];
@@ -38,64 +39,79 @@ const relayBook: BookEntity[] = [
 ];
 const DashboardSection = ({ bookList }: DashboardSectionType) => {
   return (
-    <div>
-      <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="space-y-6">
+        {/* Section Title */}
         <SectionTitle title="2월 독서모임" />
 
-        <Card>
-          <CardContent>
-            <div className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold text-muted-foreground">일정</h3>
-              <div className="relative rounded-md border p-3 pl-6 text-sm ">
-                <div className="font-medium">2월 독서모임</div>
-                <div className="text-xs text-muted-foreground">
-                  <MapPin />
-                  혜화역
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  <Clock />
-                  2026.02.01
-                </div>
-              </div>
-              {/* {events.map((event) => (
-                <div
-                  key={event.title}
-                  className="relative rounded-md border bg-muted/50 p-3 pl-6 text-sm
-                         before:absolute before:left-2 before:top-3 before:h-2 before:w-2
-                         before:rounded-full before:bg-primary"
-                >
-                  <div className="font-medium">{event.title}</div>
-                  <div className="text-xs text-muted-foreground">{event.from}</div>
-                </div>
-              ))} */}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <div className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* 🗓 Schedule */}
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* 📅 일정 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>일정</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-3">
+                <div className="rounded-md border p-3 text-sm space-y-2">
+                  <div className="font-medium">2월 독서모임</div>
 
-                {/* 📚 Book List */}
-                <div>
-                  <h3 className="mb-2 text-sm font-semibold text-muted-foreground">이번 달 도서</h3>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <BookList bookList={bookList} />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    혜화역
                   </div>
-                </div>
-                <div>
-                  <h3 className="mb-2 text-sm font-semibold text-muted-foreground">이번 달 릴레이도서</h3>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <BookList bookList={relayBook} />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Clock className="h-4 w-4" />
+                    2026.02.01
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          {/* 📚 이번 달 도서 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>이번 달 도서</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <BookList bookList={bookList} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 🔁 릴레이 도서 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>이번 달 릴레이 도서</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <BookList bookList={relayBook} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>공지사항</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TanstackTable />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>사진첩</CardTitle>
+            </CardHeader>
+            <CardContent>준비중</CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
