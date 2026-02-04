@@ -1,10 +1,10 @@
 import Image from "next/image";
-import React from "react";
 import type { BookEntity } from "@/app/books/page";
 import SectionTitle from "@/components/common/section-title";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import BookList from "../books/books-list";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Progress } from "@/components/ui/progress";
 import TanstackTable from "../common/tanstack-table";
 
 const bookList: BookEntity[] = [
@@ -101,9 +101,9 @@ const UserSection = () => {
         <div className="col-span-4 flex flex-col gap-6">
           {/* Stamp List */}
           <Card>
-            <CardTitle className="px-6 pt-6">Book List</CardTitle>
+            <CardTitle className="px-6 pt-6">2026 독서모임 현황</CardTitle>
             <CardContent>
-              <div className="flex gap-4 overflow-x-auto py-2 scrollbar-hide">
+              {/* <div className="flex gap-4 overflow-x-auto py-2 scrollbar-hide">
                 {bookList.map((book) => (
                   <Card key={book.bookId} className="w-40 sm:w-48 shrink-0 transition hover:shadow-md">
                     <a href={`/books/${book.bookId}`}>
@@ -122,6 +122,25 @@ const UserSection = () => {
                     </a>
                   </Card>
                 ))}
+              </div> */}
+              {/* 참여 정보 */}
+              <div className="grid gap-4">
+                <div>
+                  <Field className="w-full">
+                    <FieldLabel htmlFor="progress-upload">
+                      <span>참여율</span>
+                      <span className="ml-auto">66%</span>
+                    </FieldLabel>
+                    <Progress value={66} id="progress-upload" />
+                  </Field>
+                </div>
+                <div className="grid grid-cols-6 gap-4">
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <div key={index} className="relative aspect-square w-full overflow-hidden rounded-md border">
+                      <Image src="/완독도장.png" alt={`stamp-${index}`} fill className="object-contain" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -129,8 +148,47 @@ const UserSection = () => {
           {/* My Log */}
           <Card>
             <CardTitle className="px-6 pt-6">My Log</CardTitle>
-            <CardContent>
-              <TanstackTable />
+
+            <CardContent className="space-y-4">
+              {/* Log Item */}
+              <div className="flex gap-4 rounded-lg border p-3 hover:bg-muted/50 transition">
+                {/* Book Cover */}
+                <div className="relative w-20 shrink-0 overflow-hidden rounded-md aspect-2/3">
+                  <Image src="/bookcover/눈과돌멩이.jpg" alt="눈과돌멩이" fill className="object-cover" />
+                </div>
+
+                {/* Log Content */}
+                <div className="flex flex-col gap-1">
+                  <div className="text-sm font-medium">눈과 돌멩이</div>
+                  <p className="text-sm text-muted-foreground line-clamp-4 h-2/3">
+                    Nulla dolor velit adipisicing duis excepteur esse in duis nostrud occaecat mollit incididunt
+                    deserunt sunt. Ut ut sunt laborum ex occaecat eu tempor labore enim adipisicing minim ad. Est in
+                    quis eu dolore occaecat excepteur fugiat dolore nisi aliqua fugiat enim ut cillum. Labore enim duis
+                    nostrud eu. Est ut eiusmod consequat irure quis deserunt ex. Enim laboris dolor magna pariatur.
+                    Dolor et ad sint voluptate sunt elit mollit officia ad enim sit consectetur enim.
+                  </p>
+                  <span className="text-xs text-muted-foreground">2026-02-01</span>
+                </div>
+              </div>
+
+              {/* Log Item 2 */}
+              <div className="flex gap-4 rounded-lg border p-3 hover:bg-muted/50 transition">
+                <div className="relative w-20 shrink-0 overflow-hidden rounded-md aspect-2/3">
+                  <Image src="/bookcover/우아한유령.jpg" alt="우아한유령" fill className="object-cover" />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="text-sm font-medium">눈과 돌멩이</div>
+                  <p className="text-sm text-muted-foreground line-clamp-4 h-2/3">
+                    Nulla dolor velit adipisicing duis excepteur esse in duis nostrud occaecat mollit incididunt
+                    deserunt sunt. Ut ut sunt laborum ex occaecat eu tempor labore enim adipisicing minim ad. Est in
+                    quis eu dolore occaecat excepteur fugiat dolore nisi aliqua fugiat enim ut cillum. Labore enim duis
+                    nostrud eu. Est ut eiusmod consequat irure quis deserunt ex. Enim laboris dolor magna pariatur.
+                    Dolor et ad sint voluptate sunt elit mollit officia ad enim sit consectetur enim.
+                  </p>
+                  <span className="text-xs text-muted-foreground">2026-02-02</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
