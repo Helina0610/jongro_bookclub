@@ -1,4 +1,4 @@
-import { Bell, User } from "lucide-react";
+import { Bell, Book, Heart, MessageSquare, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -13,8 +13,28 @@ const HeaderSection = () => {
         </div>
 
         {/* Navigation (desktop only) */}
-        <nav className="hidden md:flex font-serif">
-          <div className="flex gap-2.5">
+        <nav className="flex items-center gap-1 sm:gap-2 font-serif">
+          {/* Mobile */}
+          <div className="flex md:hidden gap-1">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/books">
+                <Book />
+              </Link>
+            </Button>
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/wishlist">
+                <Heart />
+              </Link>
+            </Button>
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/community">
+                <MessageSquare />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden md:flex gap-2.5">
             <Button variant="ghost" size="lg" asChild>
               <Link href="/books">Book List</Link>
             </Button>

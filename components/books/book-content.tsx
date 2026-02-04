@@ -1,4 +1,4 @@
-import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Heart, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import type { BookEntity } from "@/app/books/page";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,7 +38,12 @@ const BookContent = ({ book }: BookContent) => {
 
         {/* Book Info */}
         <div className="md:col-span-2 flex flex-col gap-4">
-          <h1 className="text-3xl font-bold tracking-tight">{book.title}</h1>
+          <div className="flex justify-between">
+            <h1 className="text-3xl font-bold tracking-tight">{book.title}</h1>
+            <Button variant={"ghost"}>
+              <Heart />
+            </Button>
+          </div>
           <p className="text-muted-foreground text-lg">
             {writer} · {"까치"}
           </p>

@@ -14,7 +14,7 @@ const buttons: ButtonsType[] = [
 
 const SearchFilter = () => {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 overflow-auto">
       {buttons.map((button) => (
         <Button key={button.value} variant={button.variant}>
           {button.value}

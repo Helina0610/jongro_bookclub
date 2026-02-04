@@ -25,33 +25,35 @@ const bookList: BookEntity[] = [
 
 const WishListSection = () => {
   return (
-    <div>
+    <div className="space-y-6">
       <SectionTitle title="Wish List" />
-      <div>
-        <div>
-          <div className="rounded-md border border-dashed px-6 py-20 transition-colors duration-200 cursor-pointer">
-            <h3 className="mb-4 text-xl font-bold tracking-tight text-center">도서 검색</h3>
-            <div className="mt-2 flex gap-2 items-center justify-center">
-              <Select>
-                <SelectTrigger className="w-full max-w-48">
-                  <SelectValue placeholder="검색조건" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="title">제목</SelectItem>
-                    <SelectItem value="author">작가</SelectItem>
-                    <SelectItem value="publisher">출판사</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <div className="w-2xl">
-                <SearchInputButton />
-              </div>
-            </div>
+
+      {/* 🔍 Search Section */}
+      <div className="rounded-md border border-dashed px-4 py-8 sm:px-6 sm:py-12 transition-colors duration-200">
+        <h3 className="mb-4 text-lg sm:text-xl font-bold tracking-tight text-center">도서 검색</h3>
+
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-center">
+          <Select>
+            <SelectTrigger className="w-full sm:max-w-48">
+              <SelectValue placeholder="검색조건" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="title">제목</SelectItem>
+                <SelectItem value="author">작가</SelectItem>
+                <SelectItem value="publisher">출판사</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <div className="w-full sm:w-auto">
+            <SearchInputButton />
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-6 mt-5 gap-2.5">
+
+      {/* 📚 Book List */}
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
         <BookList bookList={bookList} />
       </div>
     </div>
