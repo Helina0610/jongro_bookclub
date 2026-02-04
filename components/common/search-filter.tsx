@@ -9,6 +9,7 @@ const buttons: ButtonsType[] = [
   { variant: "secondary", value: "국내도서" },
   { variant: "secondary", value: "해외도서" },
   { variant: "secondary", value: "책후보" },
+  { variant: "secondary", value: "릴레이독서" },
 ];
 
 const SearchFilter = () => {

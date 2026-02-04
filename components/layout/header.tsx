@@ -8,7 +8,9 @@ const HeaderSection = () => {
     <div>
       <div className="flex items-center justify-between mb-2">
         {/* Logo */}
-        <div className="font-serif font-bold text-2xl sm:text-3xl">종로책방</div>
+        <div className="font-serif font-bold text-2xl sm:text-3xl">
+          <Link href={"/"}>종로책방</Link>
+        </div>
 
         {/* Navigation (desktop only) */}
         <nav className="hidden md:flex font-serif">
