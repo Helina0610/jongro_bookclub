@@ -1,8 +1,5 @@
-import React from "react";
-import BookList from "@/components/books/books-list";
-import { Card } from "@/components/ui/card";
-import type { BookEntity } from "../books/page";
 import DashboardSection from "@/components/dashboard/dashboard-section";
+import type { BookEntity } from "./books/page";
 
 const bookList: BookEntity[] = [
   {
@@ -26,7 +23,7 @@ const bookList: BookEntity[] = [
 const DashBoardPage = () => {
   return (
     <div>
-      <DashboardSection bookList={bookList}/>
+      <DashboardSection bookList={bookList} />
     </div>
   );
 };
