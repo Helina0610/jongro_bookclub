@@ -1,5 +1,5 @@
 import { Clock, MapPin } from "lucide-react";
-import type { BookEntity } from "@/app/books/page";
+import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "../books/books-list";
 import SectionTitle from "../common/section-title";
 import TanstackTable from "../common/tanstack-table";
@@ -8,24 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 type DashboardSectionType = {
   bookList: BookEntity[];
 };
-
-const events = [
-  {
-    title: "Team Sync Meeting",
-    from: "2025-06-12T09:00:00",
-    to: "2025-06-12T10:00:00",
-  },
-  {
-    title: "Design Review",
-    from: "2025-06-12T11:30:00",
-    to: "2025-06-12T12:30:00",
-  },
-  {
-    title: "Client Presentation",
-    from: "2025-06-12T14:00:00",
-    to: "2025-06-12T15:00:00",
-  },
-];
 
 const relayBook: BookEntity[] = [
   {

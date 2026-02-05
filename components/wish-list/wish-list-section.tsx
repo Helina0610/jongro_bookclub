@@ -1,4 +1,4 @@
-import type { BookEntity } from "@/app/books/page";
+import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
 import SearchInputButton from "../common/search-input-button";
 import SectionTitle from "../common/section-title";

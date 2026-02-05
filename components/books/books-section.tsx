@@ -1,9 +1,7 @@
-import Image from "next/image";
-import type { BookEntity } from "@/app/books/page";
+import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
 import SearchSection from "@/components/books/search-section";
 import SectionTitle from "@/components/common/section-title";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 export type BookSectionType = {
   bookList: BookEntity[];
 };

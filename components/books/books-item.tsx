@@ -1,6 +1,5 @@
 import Image from "next/image";
-import React from "react";
-import type { BookEntity } from "@/app/books/page";
+import type { BookEntity } from "@/app/(main)/books/page";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 type BookItemType = {

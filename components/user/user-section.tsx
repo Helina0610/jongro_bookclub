@@ -1,78 +1,9 @@
 import Image from "next/image";
-import type { BookEntity } from "@/app/books/page";
 import SectionTitle from "@/components/common/section-title";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Progress } from "@/components/ui/progress";
-import TanstackTable from "../common/tanstack-table";
-
-const bookList: BookEntity[] = [
-  {
-    bookId: "1",
-    title: "우아한 유령",
-    writer: "장진영",
-    genre: "한국소설",
-    coverURL: "/bookcover/우아한유령.jpg",
-    description: " ",
-  },
-  {
-    bookId: "2",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-  {
-    bookId: "3",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-  {
-    bookId: "4",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-  {
-    bookId: "5",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-  {
-    bookId: "6",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-  {
-    bookId: "7",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-  {
-    bookId: "8",
-    title: "소유냐 존재냐",
-    writer: "에리히 프롬",
-    genre: "심리학",
-    coverURL: "/bookcover/소유냐존재냐.jpg",
-    description: "",
-  },
-];
 
 const UserSection = () => {
   return (

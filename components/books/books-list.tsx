@@ -1,4 +1,4 @@
-import type { BookEntity } from "@/app/books/page";
+import type { BookEntity } from "@/app/(main)/books/page";
 import BookItem from "@/components/books/books-item";
 
 type BookList = {

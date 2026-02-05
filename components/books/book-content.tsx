@@ -1,6 +1,6 @@
 import { EllipsisVertical, Heart, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import type { BookEntity } from "@/app/books/page";
+import type { BookEntity } from "@/app/(main)/books/page";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,7 +24,7 @@ type BookContent = {
 };
 
 const BookContent = ({ book }: BookContent) => {
-  const { bookId, coverURL, genre, title, writer, description } = book;
+  const { coverURL, writer } = book;
   const tags = ["한국소설"];
   return (
     <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-8">
