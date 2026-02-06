@@ -46,7 +46,7 @@ const WishListSection = () => {
             </SelectContent>
           </Select>
 
-          <div className="w-full sm:w-auto">
+          <div className="w-full sm:w-xl md:w-2xl lg:w-2xl">
             <SearchInputButton />
           </div>
         </div>
