@@ -42,7 +42,7 @@ const UserSection = () => {
                     <Progress value={66} id="progress-upload" />
                   </Field>
                 </div>
-                <div className="grid gap-2 grid-cols-4 sm:grid-cols-5 lg:grid-cols-6">
+                <div className="grid gap-2 grid-cols-4 sm:grid-cols-6 lg:grid-cols-6">
                   {Array.from({ length: 12 }).map((_, index) => (
                     <div
                       key={index}

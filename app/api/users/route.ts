@@ -21,13 +21,14 @@ export async function POST(req: Request) {
     const formData = await req.formData();
 
     const user_id = formData.get("user_id");
+    const user_name = formData.get("user_name");
     const user_pw = formData.get("user_pw"); //TODO 암호화
     const profile_image = formData.get("profile_image");
     const profile_context = formData.get("profile_context");
     const profile_sns = formData.get("profile_sns");
 
     // 필수 값 검증
-    if (typeof user_id !== "string" || typeof user_pw !== "string") {
+    if (typeof user_id !== "string" || typeof user_pw !== "string" || typeof user_name !== "string") {
       return new Response("Invalid user_id or user_pw", { status: 400 });
     }
 
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
       .values({
         user_id,
         user_pw,
+        user_name,
         profile_image: safeProfileImage,
         profile_context: safeProfileContext,
         profile_sns: safeProfileSns,

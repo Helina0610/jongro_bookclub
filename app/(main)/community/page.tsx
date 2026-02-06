@@ -1,7 +1,7 @@
-import React from "react";
+import CommunitySection from "@/components/community/community-section";
 
 const CommunityPage = () => {
-  return <div>준비중...</div>;
+  return <CommunitySection />;
 };
 
 export default CommunityPage;

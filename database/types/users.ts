@@ -3,6 +3,7 @@ import type { ColumnType, Generated } from "kysely";
 export type UsersTable = {
   user_sn: Generated<number>;
   user_id: ColumnType<string, string, string>;
+  user_name: ColumnType<string, string, string>;
   user_pw: ColumnType<string, string, string>;
   profile_image: ColumnType<Uint8Array | null, Uint8Array | null, Uint8Array | null>;
   profile_context: ColumnType<string | null, string | null, string | null>;
@@ -14,6 +15,7 @@ export type UsersTable = {
 export interface UsersResponse {
   user_sn: string;
   user_id: string;
+  user_name: string;
   user_pw: string;
   profile_image: string | null;
   profile_context: string | null;

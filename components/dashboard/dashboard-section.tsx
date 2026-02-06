@@ -2,7 +2,6 @@ import { Clock, MapPin } from "lucide-react";
 import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "../books/books-list";
 import SectionTitle from "../common/section-title";
-import TanstackTable from "../common/tanstack-table";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 type DashboardSectionType = {
@@ -84,7 +83,7 @@ const DashboardSection = ({ bookList }: DashboardSectionType) => {
               <CardTitle>공지사항</CardTitle>
             </CardHeader>
             <CardContent>
-              <TanstackTable />
+              <div>준비중</div>
             </CardContent>
           </Card>
           <Card>

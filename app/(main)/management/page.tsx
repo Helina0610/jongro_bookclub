@@ -1,12 +1,7 @@
-import React from "react";
-import SectionTitle from "@/components/common/section-title";
+import ManagementSection from "@/components/management/management-section";
 
 const ManagementPage = () => {
-  return (
-    <div>
-      <SectionTitle title="사용자 관리" />
-    </div>
-  );
+  return <ManagementSection />;
 };
 
 export default ManagementPage;
