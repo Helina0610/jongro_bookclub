@@ -12,6 +12,10 @@ const ManagementSection = () => {
       <div>
         <SectionTitle title="공지글 관리" />
       </div>
+      {/* 책 관리 */}
+      <div>
+        <SectionTitle title="책 관리" />
+      </div>
     </div>
   );
 };
