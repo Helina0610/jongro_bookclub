@@ -3,14 +3,16 @@ import { Pool } from "pg";
 import type { UsersTable } from "@/database/types/users";
 import type { OfflineMeetingTable } from "./types/offline_meeting";
 
+export const database_pool = new Pool({
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
+});
+
 const dialect = new PostgresDialect({
-  pool: new Pool({
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    port: Number(process.env.DB_PORT),
-  }),
+  pool: database_pool,
 });
 
 export const db = new Kysely<BookClubDatabase>({
@@ -18,6 +20,6 @@ export const db = new Kysely<BookClubDatabase>({
 });
 
 export interface BookClubDatabase {
-  "bookclub.user": UsersTable;
+  "bookclub.users": UsersTable;
   "bookclub.offline_meeting": OfflineMeetingTable;
 }

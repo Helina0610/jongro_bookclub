@@ -1,3 +1,4 @@
+import { SessionProvider } from "next-auth/react";
 import BookSection from "@/components/books/books-section";
 
 export interface BookEntity {
@@ -30,9 +31,11 @@ const bookList: BookEntity[] = [
 
 const BookPage = () => {
   return (
-    <div>
-      <BookSection bookList={bookList} />
-    </div>
+    <SessionProvider>
+      <div>
+        <BookSection bookList={bookList} />
+      </div>
+    </SessionProvider>
   );
 };
 

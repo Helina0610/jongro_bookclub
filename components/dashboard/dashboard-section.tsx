@@ -1,4 +1,6 @@
+"use client";
 import { Clock, MapPin } from "lucide-react";
+import { useSession } from "next-auth/react";
 import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "../books/books-list";
 import SectionTitle from "../common/section-title";
@@ -19,6 +21,7 @@ const relayBook: BookEntity[] = [
   },
 ];
 const DashboardSection = ({ bookList }: DashboardSectionType) => {
+  const { data: session } = useSession();
   return (
     <div className="space-y-6">
       <div className="space-y-6">

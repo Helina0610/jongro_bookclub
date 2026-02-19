@@ -1,3 +1,4 @@
+import { SessionProvider } from "next-auth/react";
 import DashboardSection from "@/components/dashboard/dashboard-section";
 import type { BookEntity } from "./books/page";
 
@@ -23,7 +24,9 @@ const bookList: BookEntity[] = [
 const DashBoardPage = () => {
   return (
     <div>
-      <DashboardSection bookList={bookList} />
+      <SessionProvider>
+        <DashboardSection bookList={bookList} />
+      </SessionProvider>
     </div>
   );
 };

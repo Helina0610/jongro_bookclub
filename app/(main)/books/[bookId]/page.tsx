@@ -1,3 +1,4 @@
+import { SessionProvider } from "next-auth/react";
 import React from "react";
 import BookContent from "@/components/books/book-content";
 import type { BookEntity } from "../page";
@@ -22,9 +23,11 @@ const BookDetail = async ({ params }: BookDetailType) => {
   };
 
   return (
-    <div>
-      <BookContent book={book} />
-    </div>
+    <SessionProvider>
+      <div>
+        <BookContent book={book} />
+      </div>
+    </SessionProvider>
   );
 };
 

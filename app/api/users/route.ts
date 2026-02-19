@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import type { Updateable } from "kysely";
 import { NextResponse } from "next/server";
 import { db } from "@/database/postgres";
@@ -7,7 +8,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const user_list = await db.selectFrom("bookclub.user").selectAll().execute();
+    const user_list = await db.selectFrom("bookclub.users").selectAll().execute();
     return NextResponse.json(user_list);
   } catch (e) {
     if (e instanceof Error) {
@@ -32,6 +33,8 @@ export async function POST(req: Request) {
       return new Response("Invalid user_id or user_pw", { status: 400 });
     }
 
+    const hashedPassword = await bcrypt.hash(user_pw, 10);
+
     // ✅ File → Uint8Array 변환
     let safeProfileImage: Uint8Array | null = null;
 
@@ -45,10 +48,10 @@ export async function POST(req: Request) {
     const safeProfileSns = typeof profile_sns === "string" ? profile_sns : null;
 
     await db
-      .insertInto("bookclub.user")
+      .insertInto("bookclub.users")
       .values({
         user_id,
-        user_pw,
+        user_pw: hashedPassword,
         user_name,
         profile_image: safeProfileImage,
         profile_context: safeProfileContext,
@@ -57,7 +60,7 @@ export async function POST(req: Request) {
       })
       .execute();
 
-    return Response.json({ message: "User created" }, { status: 201 });
+    return Response.json({ message: "User created" }, { status: 200 });
   } catch (e) {
     if (e instanceof Error) {
       return new Response(e.message, { status: 500 });
@@ -112,7 +115,7 @@ export async function PUT(req: Request) {
       updateValues.profile_sns = profile_sns;
     }
 
-    await db.updateTable("bookclub.user").set(updateValues).where("bookclub.user.user_sn", "=", user_sn).execute();
+    await db.updateTable("bookclub.users").set(updateValues).where("bookclub.users.user_sn", "=", user_sn).execute();
 
     return Response.json({ message: "User updated" }, { status: 200 });
   } catch (error) {
