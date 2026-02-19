@@ -1,6 +1,7 @@
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 import type { UsersTable } from "@/database/types/users";
+import type { BooksTable } from "./types/books";
 import type { OfflineMeetingTable } from "./types/offline_meeting";
 
 export const database_pool = new Pool({
@@ -22,4 +23,5 @@ export const db = new Kysely<BookClubDatabase>({
 export interface BookClubDatabase {
   "bookclub.users": UsersTable;
   "bookclub.offline_meeting": OfflineMeetingTable;
+  "bookclub.books": BooksTable;
 }

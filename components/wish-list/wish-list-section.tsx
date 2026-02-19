@@ -34,6 +34,7 @@ type SearchBook = {
   title: string;
   author: string;
   publisher: string;
+  update_date: string;
 };
 
 /* ---------------- component ---------------- */
@@ -46,29 +47,41 @@ const WishListSection = () => {
 
   /* 🔍 검색 API 호출 (mock) */
   const handleSearch = async () => {
-    if (!keyword) return;
+    if (!keyword || !condition) return;
 
     setLoading(true);
 
-    // 실제 구현 시 fetch("/api/books?...")
-    await new Promise((r) => setTimeout(r, 800));
+    try {
+      const params = new URLSearchParams();
 
-    setSearchResult([
-      {
-        id: "1",
-        title: "기차의 꿈",
-        author: "데니스 존슨",
-        publisher: "EBS",
-      },
-      {
-        id: "2",
-        title: "빛이 이끄는 곳으로",
-        author: "백희성",
-        publisher: "EBS",
-      },
-    ]);
+      if (condition === "title") {
+        params.set("title", keyword);
+      }
 
-    setLoading(false);
+      if (condition === "author") {
+        params.set("author", keyword);
+      }
+
+      if (condition === "publisher") {
+        params.set("publisher", keyword);
+      }
+
+      const res = await fetch(`/api/library?${params.toString()}`, {
+        method: "GET",
+      });
+
+      if (!res.ok) {
+        throw new Error("검색 API 호출 실패");
+      }
+
+      const books = await res.json();
+      setSearchResult(books);
+    } catch (e) {
+      console.error(e);
+      setSearchResult([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetSearch = () => {
@@ -143,6 +156,7 @@ const WishListSection = () => {
                   <h3 className="line-clamp-2 text-sm font-semibold">{book.title}</h3>
                   <p className="mt-1 text-xs text-muted-foreground">{book.author}</p>
                   <p className="text-xs text-muted-foreground truncate">{book.publisher}</p>
+                  <p className="text-xs text-muted-foreground truncate">{book.update_date}</p>
 
                   <Button size="sm" variant="outline" className="mt-3 w-full">
                     Wish List 추가
