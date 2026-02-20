@@ -6,7 +6,6 @@ import { db } from "./database/postgres";
 import type { UsersResponse } from "./database/types/users";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: KyselyAdapter(db),
   providers: [
     Credentials({
       async authorize(credentials) {
