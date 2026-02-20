@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { LibraryResponse } from "@/database/types/library";
+import type { LibraryBookItemResponse, LibraryResponse, SearchBook } from "@/database/types/library";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -11,6 +11,7 @@ export async function GET(req: Request) {
     return NextResponse.json([], { status: 200 });
   }
 
+  // TODO : 환경 변수 변경하기
   const libraryUrl = process.env.LIBRARY_URL;
   const libraryKey = process.env.LIBRARY_KEY;
 
@@ -20,6 +21,7 @@ export async function GET(req: Request) {
 
   const baseUrl = new URL(libraryUrl);
 
+  // TODO : API 메뉴얼에 따라 파라미터 설정하기
   baseUrl.searchParams.set("cert_key", libraryKey);
   baseUrl.searchParams.set("result_style", "json");
   baseUrl.searchParams.set("page_no", "1");
@@ -39,16 +41,19 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "외부 도서 API 호출 실패" }, { status: 502 });
   }
 
-  const data = await res.json();
+  const data: LibraryResponse = await res.json();
 
-  const books = data.docs.map((item: LibraryResponse) => ({
-    id: Number(item.EA_ISBN),
-    title: item.TITLE,
-    author: item.AUTHOR,
-    publisher: item.PUBLISHER,
-    update_date: item.UPDATE_DATE
-      ? `${item.UPDATE_DATE?.slice(0, 4)}년${item.UPDATE_DATE?.slice(4, 6)}월${item.UPDATE_DATE?.slice(6, 8)}일`
-      : null,
+  if (!data.item) {
+    return NextResponse.json([], { status: 200 });
+  }
+
+  const books: SearchBook[] = data.item.map((item: LibraryBookItemResponse) => ({
+    id: Number(item.isbn),
+    title: item.title,
+    author: item.author,
+    publisher: item.publisher,
+    update_date: item.pubDate,
+    cover: item.cover,
   }));
 
   return NextResponse.json(books);

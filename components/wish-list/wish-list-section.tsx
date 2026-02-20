@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
-import SearchInputButton from "../common/search-input-button";
+import type { SearchBook } from "@/database/types/library";
 import SectionTitle from "../common/section-title";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
@@ -29,20 +30,13 @@ const bookList: BookEntity[] = [
   },
 ];
 
-type SearchBook = {
-  id: string;
-  title: string;
-  author: string;
-  publisher: string;
-  update_date: string;
-};
-
 /* ---------------- component ---------------- */
 
 const WishListSection = () => {
   const [condition, setCondition] = useState<string>();
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
+  // const [searchResult, setSearchResult] = useState<LibraryBookItemResponse[] | null>(null);
   const [searchResult, setSearchResult] = useState<SearchBook[] | null>(null);
 
   /* 🔍 검색 API 호출 (mock) */
@@ -150,9 +144,18 @@ const WishListSection = () => {
               {searchResult.map((book) => (
                 <div
                   key={book.id}
-                  className="rounded-lg border bg-background p-4 shadow-sm
-                             transition hover:-translate-y-1 hover:shadow-md"
+                  className="rounded-lg border bg-background p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
                 >
+                  <div className="relative mb-3 aspect-3/4 w-full overflow-hidden rounded-md bg-muted">
+                    <Image
+                      src={book.cover ?? "/images/book-placeholder.png"}
+                      alt={book.title ?? "도서 커버"}
+                      fill
+                      sizes="(min-width: 1024px) 200px, (min-width: 768px) 33vw, 50vw"
+                      className="object-cover"
+                      priority={false}
+                    />
+                  </div>
                   <h3 className="line-clamp-2 text-sm font-semibold">{book.title}</h3>
                   <p className="mt-1 text-xs text-muted-foreground">{book.author}</p>
                   <p className="text-xs text-muted-foreground truncate">{book.publisher}</p>
