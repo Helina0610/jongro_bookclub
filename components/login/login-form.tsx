@@ -47,14 +47,6 @@ const LoginFormDiv = ({ setAddUser }: loginDivType) => {
       user_pw: formData.get("user_pw"),
       redirectTo: "/",
     });
-
-    if (res?.error) {
-      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
-      return;
-    }
-
-    // // 로그인 성공
-    // window.location.href = "/";
   };
   return (
     <form className="p-6 md:p-8" onSubmit={handleSubmit}>
