@@ -25,7 +25,7 @@ type BookContentType = {
 };
 
 const BookContent = ({ bookSn }: BookContentType) => {
-  const { books, loading, error, refetch } = useBooks({ bookSn: bookSn });
+  const { books } = useBooks({ bookSn: bookSn });
 
   if (books.length === 0) return;
   const book = books[0];

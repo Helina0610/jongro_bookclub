@@ -13,7 +13,7 @@ const buttons: ButtonsType[] = [
 
 type SearchFilterType = {
   onBookTypeChange: React.Dispatch<React.SetStateAction<string>>;
-  selectedBookType: string;
+  selectedBookType?: string;
 };
 
 const SearchFilter = ({ onBookTypeChange, selectedBookType }: SearchFilterType) => {
