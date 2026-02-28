@@ -1,64 +1,53 @@
 "use client";
 
+import { DialogClose } from "@radix-ui/react-dialog";
 import Image from "next/image";
-import { useState } from "react";
+import React from "react";
 import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
-import type { SearchBook } from "@/database/types/library";
+import type { LibraryBookItemResponse, SearchBook } from "@/database/types/library";
+import { useBooks } from "@/lib/hooks/use_book";
 import SectionTitle from "../common/section-title";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardFooter } from "../ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Field, FieldGroup } from "../ui/field";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-
-/* ---------------- mock data ---------------- */
-
-const bookList: BookEntity[] = [
-  {
-    bookId: "1",
-    title: "안녕이라그랬어",
-    writer: "김애란",
-    genre: "한국소설",
-    coverURL: "/bookcover/안녕이라그랬어.jpg",
-    description: "",
-  },
-  {
-    bookId: "2",
-    title: "눈과돌멩이",
-    writer: "위수정 외",
-    genre: "심리학",
-    coverURL: "/bookcover/눈과돌멩이.jpg",
-    description: "",
-  },
-];
+import { Textarea } from "../ui/textarea";
 
 /* ---------------- component ---------------- */
 
 const WishListSection = () => {
-  const [condition, setCondition] = useState<string>();
-  const [keyword, setKeyword] = useState("");
-  const [loading, setLoading] = useState(false);
-  // const [searchResult, setSearchResult] = useState<LibraryBookItemResponse[] | null>(null);
-  const [searchResult, setSearchResult] = useState<SearchBook[] | null>(null);
+  const [condition, setCondition] = React.useState<string>();
+  const [keyword, setKeyword] = React.useState("");
+  const [apiLoading, setApiLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [searchResult, setSearchResult] = React.useState<LibraryBookItemResponse[] | null>(null);
+  const [selectedBook, setSelectedBook] = React.useState<LibraryBookItemResponse | null>(null);
+  // const [searchResult, setSearchResult] = React.useState<SearchBook[] | null>(null);
+
+  const { books, loading, error } = useBooks({ wishYn: "Y" });
 
   /* 🔍 검색 API 호출 (mock) */
   const handleSearch = async () => {
     if (!keyword || !condition) return;
 
-    setLoading(true);
+    setApiLoading(true);
 
     try {
       const params = new URLSearchParams();
-
-      if (condition === "title") {
-        params.set("title", keyword);
-      }
-
-      if (condition === "author") {
-        params.set("author", keyword);
-      }
-
-      if (condition === "publisher") {
-        params.set("publisher", keyword);
-      }
+      params.set("queryType", condition);
+      params.set("query", keyword);
 
       const res = await fetch(`/api/library?${params.toString()}`, {
         method: "GET",
@@ -74,7 +63,7 @@ const WishListSection = () => {
       console.error(e);
       setSearchResult([]);
     } finally {
-      setLoading(false);
+      setApiLoading(false);
     }
   };
 
@@ -100,7 +89,6 @@ const WishListSection = () => {
               <SelectGroup>
                 <SelectItem value="title">제목</SelectItem>
                 <SelectItem value="author">작가</SelectItem>
-                <SelectItem value="publisher">출판사</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -117,7 +105,7 @@ const WishListSection = () => {
       </div>
 
       {/* 🔍 검색 결과 */}
-      {loading && <p className="text-center text-sm text-muted-foreground">검색 중입니다…</p>}
+      {apiLoading && <p className="text-center text-sm text-muted-foreground">검색 중입니다…</p>}
 
       {searchResult && !loading && (
         <div className="space-y-4">
@@ -133,39 +121,45 @@ const WishListSection = () => {
               검색 결과가 없습니다.
             </div>
           ) : (
-            <div
-              className="grid gap-4
-              grid-cols-1
-              sm:grid-cols-2
-              md:grid-cols-3
-              lg:grid-cols-4
-              xl:grid-cols-5"
-            >
-              {searchResult.map((book) => (
-                <div
-                  key={book.id}
-                  className="rounded-lg border bg-background p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                >
-                  <div className="relative mb-3 aspect-3/4 w-full overflow-hidden rounded-md bg-muted">
-                    <Image
-                      src={book.cover ?? "/images/book-placeholder.png"}
-                      alt={book.title ?? "도서 커버"}
-                      fill
-                      sizes="(min-width: 1024px) 200px, (min-width: 768px) 33vw, 50vw"
-                      className="object-cover"
-                      priority={false}
-                    />
-                  </div>
-                  <h3 className="line-clamp-2 text-sm font-semibold">{book.title}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">{book.author}</p>
-                  <p className="text-xs text-muted-foreground truncate">{book.publisher}</p>
-                  <p className="text-xs text-muted-foreground truncate">{book.update_date}</p>
+            <div className="overflow-x-auto">
+              <div className="grid grid-flow-col auto-cols-[160px]  gap-3 pb-2  sm:auto-cols-[180px]  md:auto-cols-[200px]">
+                {searchResult.map((book) => (
+                  <Card
+                    key={book.isbn}
+                    className="flex h-full flex-col transition hover:-translate-y-1 hover:shadow-md p-2"
+                  >
+                    <CardContent className="p-2">
+                      <div className="relative w-full overflow-hidden rounded-md aspect-3/4 bg-muted">
+                        <Image
+                          src={book.cover ?? "/images/book-placeholder.png"}
+                          alt={book.title ?? "도서 커버"}
+                          fill
+                          sizes="200px"
+                          className="object-cover"
+                        />
+                      </div>
+                    </CardContent>
 
-                  <Button size="sm" variant="outline" className="mt-3 w-full">
-                    Wish List 추가
-                  </Button>
-                </div>
-              ))}
+                    <CardFooter className="px-2">
+                      <div className="space-y-1 text-start">
+                        <div className="line-clamp-2 text-sm font-medium">{book.title}</div>
+                        <div className="text-xs text-muted-foreground">{book.author}</div>
+                        <div className="text-xs text-muted-foreground truncate">{book.publisher}</div>
+                      </div>
+                    </CardFooter>
+                    <Button
+                      variant="outline"
+                      className="mt-auto w-full"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        setOpen(true);
+                      }}
+                    >
+                      Wish List 추가
+                    </Button>
+                  </Card>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -174,10 +168,151 @@ const WishListSection = () => {
       {/* 📚 기존 Book List */}
       <h4 className="text-lg font-semibold">전체 위시도서</h4>
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
-        <BookList bookList={bookList} />
+        <BookList bookList={books} />
       </div>
+
+      {selectedBook && <WishBookDialog book={selectedBook} open={open} setOpen={setOpen} />}
     </div>
   );
 };
 
 export default WishListSection;
+
+type WishBookDialogType = {
+  book: LibraryBookItemResponse;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const WishBookDialog = ({ book, open, setOpen }: WishBookDialogType) => {
+  // const [open, setOpen] = React.useState(false);
+  const [relayBook, setRelayBook] = React.useState<string>();
+  const [bookType, setBookType] = React.useState<string>();
+
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!bookType) {
+      alert("장르를 선택해 주세요");
+      return;
+    }
+
+    const formData = new FormData(e.currentTarget);
+    formData.append("book_type", bookType);
+    formData.append("book_isbn", book.isbn ?? "");
+    formData.append("book_cover", book.cover ?? "");
+    formData.append("book_category", book.categoryName ?? "");
+
+    if (relayBook) {
+      formData.append("rely_book_yn", relayBook);
+    }
+
+    const res = await fetch("/api/book", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      alert(error.error ?? "저장 실패");
+      return;
+    }
+
+    alert("저장되었습니다");
+    setOpen(false); // 🔥 핵심
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>책 편집</DialogTitle>
+          <DialogDescription>추가 정보를 기입해 주세요</DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit}>
+          {/* 🔽 이미지 + 폼 레이아웃 */}
+          <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
+            {/* 왼쪽 이미지 */}
+            <div className="relative w-full overflow-hidden rounded-md aspect-3/4 bg-muted">
+              <Image
+                src={book.cover ?? "/images/book-placeholder.png"}
+                alt={book.title ?? "도서 커버"}
+                fill
+                sizes="120px"
+                className="object-cover"
+              />
+            </div>
+
+            {/* 오른쪽 필드 그룹 */}
+            <FieldGroup className="gap-3">
+              <Field>
+                <Label htmlFor="title">책 제목</Label>
+                <Input id="title" name="title" defaultValue={book.title ?? ""} />
+              </Field>
+
+              <Field>
+                <Label htmlFor="author">저자</Label>
+                <Input id="author" name="author" defaultValue={book.author ?? ""} />
+              </Field>
+              <Field>
+                <Label htmlFor="publisher">출판사</Label>
+                <Input id="publisher" name="publisher" defaultValue={book.publisher ?? ""} />
+              </Field>
+              <Field>
+                <Label htmlFor="description">책 소개</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  defaultValue={book.description ?? ""}
+                  className="overflow-scroll h-20"
+                />
+              </Field>
+
+              <Field>
+                <Label>장르</Label>
+                <Select onValueChange={setBookType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="장르를 선택해 주세요" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="국내도서">국내도서</SelectItem>
+                      <SelectItem value="해외도서">해외도서</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <Label>릴레이독서</Label>
+                <Select onValueChange={setRelayBook}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="릴레이독서 여부" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="Y">Y</SelectItem>
+                      <SelectItem value="N">N</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+            </FieldGroup>
+          </div>
+
+          <DialogFooter className="grid grid-cols-2 gap-2">
+            <DialogClose asChild>
+              <Button type="button" variant="outline" className="w-full">
+                취소
+              </Button>
+            </DialogClose>
+
+            <Button type="submit" className="w-full">
+              저장
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

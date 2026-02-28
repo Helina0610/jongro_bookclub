@@ -1,6 +1,6 @@
+"use client";
 import { EllipsisVertical, Heart, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import type { BookEntity } from "@/app/(main)/books/page";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,50 +17,56 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
+import { useBooks } from "@/lib/hooks/use_book";
 import { Button } from "../ui/button";
 
-type BookContent = {
-  book: BookEntity;
+type BookContentType = {
+  bookSn: string;
 };
 
-const BookContent = ({ book }: BookContent) => {
-  const { coverURL, writer } = book;
-  const tags = ["한국소설"];
+const BookContent = ({ bookSn }: BookContentType) => {
+  const { books, loading, error, refetch } = useBooks({ bookSn: bookSn });
+
+  if (books.length === 0) return;
+  const book = books[0];
+  const { title, author, publisher, book_cover, book_category, book_description, wish_yn, book_type } = book;
+  const tags = book_category?.split(">") ?? [];
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Book Cover */}
         <div className="flex justify-center">
           <div className="relative w-80 aspect-2/3 overflow-hidden rounded-lg">
-            <Image src={coverURL} alt={book.title} fill className="object-cover" />
+            <Image src={book_cover ?? ""} alt={title ?? ""} fill className="object-cover" />
           </div>
         </div>
 
         {/* Book Info */}
         <div className="md:col-span-2 flex flex-col gap-4">
           <div className="flex justify-between">
-            <h1 className="text-3xl font-bold tracking-tight">{book.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
             <Button variant={"ghost"}>
-              <Heart />
+              <Heart className="h-5 w-5" fill={wish_yn === "Y" ? "currentColor" : "none"} />
             </Button>
           </div>
           <p className="text-muted-foreground text-lg">
-            {writer} · {"까치"}
+            {author} · {publisher}
           </p>
-
           <div className="flex gap-2 flex-wrap">
+            <Badge variant="default">{book_type}</Badge>
+            <Separator orientation="vertical" />
             {tags.map((tag) => (
-              <Badge key={tag} variant={"outline"}>
+              <Badge key={tag} variant="outline">
                 {tag}
               </Badge>
             ))}
           </div>
-
-          <Separator className="my-4" />
-
+          <p className="leading-relaxed text-muted-foreground text-sm">2026-02-14</p>
+          <Separator className="my-2" />
           <div>
             <h2 className="text-xl font-semibold mb-2">책 소개</h2>
-            <p className="leading-relaxed text-muted-foreground">{book.description}</p>
+            <p className="leading-relaxed text-muted-foreground">{book_description}</p>
           </div>
         </div>
       </div>
@@ -86,13 +92,11 @@ const BookContent = ({ book }: BookContent) => {
         </div>
       </div>
       <div className="flex gap-4">
-        {/* Avatar */}
         <Avatar className="h-10 w-10">
           <AvatarImage src="/두산망곰잠옷.jpg" alt="@user" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-
-        {/* Comment Body */}
+        ;
         <div className="flex-1 rounded-lg border px-4 py-3">
           {/* Header */}
           <div className="flex items-start justify-between">
@@ -126,6 +130,7 @@ const BookContent = ({ book }: BookContent) => {
           {/* Footer */}
           <p className="mt-3 text-xs text-muted-foreground">2026-02-01</p>
         </div>
+        ;
       </div>
     </div>
   );

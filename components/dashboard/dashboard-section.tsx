@@ -1,27 +1,16 @@
 "use client";
 import { Clock, MapPin } from "lucide-react";
 import { useSession } from "next-auth/react";
-import type { BookEntity } from "@/app/(main)/books/page";
+import { useBooks } from "@/lib/hooks/use_book";
 import BookList from "../books/books-list";
 import SectionTitle from "../common/section-title";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
-type DashboardSectionType = {
-  bookList: BookEntity[];
-};
-
-const relayBook: BookEntity[] = [
-  {
-    bookId: "12",
-    title: "우아한 유령",
-    writer: "장진영",
-    genre: "한국소설",
-    coverURL: "/bookcover/안녕이라그랬어.jpg",
-    description: " ",
-  },
-];
-const DashboardSection = ({ bookList }: DashboardSectionType) => {
+const DashboardSection = () => {
   const { data: session } = useSession();
+
+  // const {books} = useBooks()
+
   return (
     <div className="space-y-6">
       <div className="space-y-6">
@@ -60,9 +49,7 @@ const DashboardSection = ({ bookList }: DashboardSectionType) => {
               <CardTitle>이번 달 도서</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <BookList bookList={bookList} />
-              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{/* <BookList bookList={bookList} /> */}</div>
             </CardContent>
           </Card>
 
@@ -72,9 +59,7 @@ const DashboardSection = ({ bookList }: DashboardSectionType) => {
               <CardTitle>이번 달 릴레이 도서</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <BookList bookList={relayBook} />
-              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{/* <BookList bookList={relayBook} /> */}</div>
             </CardContent>
           </Card>
         </div>

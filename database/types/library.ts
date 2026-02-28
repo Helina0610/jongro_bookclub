@@ -35,10 +35,12 @@ export type LibraryBookItemResponse = {
 };
 
 export type SearchBook = {
-  id: number | null;
+  isbn: string | null;
   title: string | null;
   author: string | null;
   publisher: string | null;
   cover: string | null;
   update_date: string | null;
+  description: string | null;
+  categoryName: string | null;
 };
