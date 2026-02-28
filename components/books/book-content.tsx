@@ -63,7 +63,7 @@ const BookContent = ({ bookSn }: BookContentType) => {
     <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Book Cover */}
-        <div className="flex justify-center">
+        <div className="flex justify-center self-start">
           <div className="relative w-80 aspect-2/3 overflow-hidden rounded-lg">
             <Image src={book_cover ?? ""} alt={title ?? ""} fill className="object-cover" />
           </div>

@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       if (bookType === "국내도서" || bookType === "해외도서") {
         query = query.where("bookclub.books.book_type", "=", bookType);
       } else if (bookType === "릴레이독서") {
-        query = query.where("bookclub.books.wish_yn", "=", "Y");
+        query = query.where("bookclub.books.wish_yn", "=", "N");
       }
     }
 
