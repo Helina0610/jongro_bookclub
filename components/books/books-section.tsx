@@ -1,14 +1,11 @@
 "use client";
-import { Filter } from "lucide-react";
 import React from "react";
 import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
 import SectionTitle from "@/components/common/section-title";
-import { useBooks } from "@/lib/hooks/use_book";
+import { useBooks } from "@/lib/hooks/use-book";
 import SearchFilter from "../common/search-filter";
 import SearchInputButton from "../common/search-input-button";
-import { Button } from "../ui/button";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export type BookSectionType = {
   bookList: BookEntity[];

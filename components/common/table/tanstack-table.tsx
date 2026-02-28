@@ -18,7 +18,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import React, { useEffect } from "react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { TableData } from "./table-types";
 
 type TanstackTable<T extends TableData> = {
@@ -77,9 +77,9 @@ const TanstackTable = <T extends TableData>({ initialData, initialColumns, setSe
   });
 
   return (
-    <div className="p-2">
+    <div className="overflow-hidden rounded-lg border">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {

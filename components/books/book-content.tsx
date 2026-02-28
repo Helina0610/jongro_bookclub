@@ -1,23 +1,14 @@
 "use client";
-import { EllipsisVertical, Heart, Pencil, Trash2 } from "lucide-react";
+import { Heart } from "lucide-react";
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSession } from "next-auth/react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
-import { useBooks } from "@/lib/hooks/use_book";
+import type { ReplyResponse } from "@/database/types/reply";
+import { useBooks } from "@/lib/hooks/use-book";
+import { EditReply } from "../reply/reply-item";
+import ReplyList from "../reply/reply-list";
 import { Button } from "../ui/button";
 
 type BookContentType = {
@@ -25,7 +16,43 @@ type BookContentType = {
 };
 
 const BookContent = ({ bookSn }: BookContentType) => {
+  const { data: session } = useSession();
+  const [replyList, setReplyList] = React.useState<ReplyResponse[] | null>();
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+
+  const user_sn = session?.user?.id;
+
   const { books } = useBooks({ bookSn: bookSn });
+
+  const fetchReply = React.useCallback(async () => {
+    try {
+      const params = new URLSearchParams();
+      params.set("book_sn", bookSn);
+      if (user_sn) params.set("use_sn", user_sn);
+
+      const res = await fetch(`/api/reply?${params.toString()}`, {
+        method: "GET",
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        alert(error.error ?? "저장 실패");
+        return;
+      }
+
+      const replys = await res.json();
+      setReplyList(replys);
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error("Unknown error"));
+    } finally {
+      setLoading(false);
+    }
+  }, [bookSn, user_sn]);
+
+  React.useEffect(() => {
+    fetchReply();
+  }, [fetchReply]);
 
   if (books.length === 0) return;
   const book = books[0];
@@ -70,68 +97,11 @@ const BookContent = ({ bookSn }: BookContentType) => {
           </div>
         </div>
       </div>
-      <div>
-        <div className="flex gap-4">
-          <div className="">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src="/두산망곰잠옷.jpg" alt="@user" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="w-full">
-            <InputGroup>
-              <InputGroupTextarea id="block-end-textarea" placeholder="Write a comment..." />
-              <InputGroupAddon align="block-end">
-                <InputGroupText>0/280</InputGroupText>
-                <InputGroupButton variant="default" size="sm" className="ml-auto">
-                  Post
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-4">
-        <Avatar className="h-10 w-10">
-          <AvatarImage src="/두산망곰잠옷.jpg" alt="@user" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        ;
-        <div className="flex-1 rounded-lg border px-4 py-3">
-          {/* Header */}
-          <div className="flex items-start justify-between">
-            <div className="text-sm font-medium">사용자명</div>
+      {/* 댓글 작성 */}
+      {user_sn && <EditReply bookSn={book.book_sn} userSn={user_sn} />}
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <EllipsisVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  수정
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-500">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  삭제
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Content */}
-          <p className="mt-2 text-sm leading-relaxed">
-            담담하게 지나갈 일이 아닌데 잊어버리고 언급하기 꺼려하는 모습들을 볼 때 주인공들이 얼마나 힘들었는지 짐작할
-            수 있었다.
-          </p>
-
-          {/* Footer */}
-          <p className="mt-3 text-xs text-muted-foreground">2026-02-01</p>
-        </div>
-        ;
-      </div>
+      {/* 댓글 리스트 */}
+      {replyList && <ReplyList replyList={replyList} />}
     </div>
   );
 };

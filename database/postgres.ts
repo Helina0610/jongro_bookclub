@@ -3,6 +3,8 @@ import { Pool } from "pg";
 import type { UsersTable } from "@/database/types/users";
 import type { BooksTable } from "./types/books";
 import type { OfflineMeetingTable } from "./types/offline_meeting";
+import type { PostsTable } from "./types/post";
+import type { ReplyTable } from "./types/reply";
 
 export const database_pool = new Pool({
   database: process.env.DB_NAME,
@@ -24,4 +26,6 @@ export interface BookClubDatabase {
   "bookclub.users": UsersTable;
   "bookclub.offline_meeting": OfflineMeetingTable;
   "bookclub.books": BooksTable;
+  "bookclub.posts": PostsTable;
+  "bookclub.reply": ReplyTable;
 }

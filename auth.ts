@@ -1,4 +1,3 @@
-import { KyselyAdapter } from "@auth/kysely-adapter";
 import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -23,6 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!isValid) return null;
         return {
           id: String(user.user_sn),
+          user_sn: user.user_sn,
           user_id: user.user_id,
           user_nm: user.user_name,
         };
@@ -54,11 +54,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.user_id = (user as UsersResponse).user_id;
+        token.user_sn = (user as UsersResponse).user_sn;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
+        session.user.id = token.user_sn as string;
         session.user.name = token.user_id as string;
       }
       return session;

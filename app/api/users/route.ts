@@ -8,7 +8,13 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const user_list = await db.selectFrom("bookclub.users").selectAll().execute();
+    const user_sn = Number(searchParams.get("user_sn"));
+
+    const user_list = await db
+      .selectFrom("bookclub.users")
+      .selectAll()
+      .where("bookclub.users.user_sn", "=", user_sn)
+      .execute();
     return NextResponse.json(user_list);
   } catch (e) {
     if (e instanceof Error) {
@@ -74,7 +80,9 @@ export async function PUT(req: Request) {
 
     const user_sn_raw = formData.get("user_sn");
     const user_id = formData.get("user_id");
-    const user_pw = formData.get("user_pw");
+    const user_name = formData.get("user_name");
+
+    // const user_pw = formData.get("user_pw");
     const profile_image = formData.get("profile_image");
     const profile_context = formData.get("profile_context");
     const profile_sns = formData.get("profile_sns");
@@ -89,15 +97,13 @@ export async function PUT(req: Request) {
       return new Response("user_sn must be a number", { status: 400 });
     }
 
-    // 필수 값 검증
-    if (typeof user_id !== "string" || typeof user_pw !== "string") {
-      return new Response("Invalid user_id or user_pw", { status: 400 });
+    if (typeof user_id !== "string") {
+      return new Response("Invalid user_id ", { status: 400 });
     }
 
     // ✅ DB UPDATE 전용 타입
     const updateValues: Updateable<UsersTable> = {
       user_id,
-      user_pw,
       update_date: new Date(),
     };
 
@@ -107,6 +113,10 @@ export async function PUT(req: Request) {
       updateValues.profile_image = new Uint8Array(buffer);
     }
 
+    if (typeof user_name === "string") {
+      updateValues.user_name = user_name;
+    }
+
     if (typeof profile_context === "string") {
       updateValues.profile_context = profile_context;
     }
@@ -114,6 +124,8 @@ export async function PUT(req: Request) {
     if (typeof profile_sns === "string") {
       updateValues.profile_sns = profile_sns;
     }
+
+    console.log(updateValues);
 
     await db.updateTable("bookclub.users").set(updateValues).where("bookclub.users.user_sn", "=", user_sn).execute();
 

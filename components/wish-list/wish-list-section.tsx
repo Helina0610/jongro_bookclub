@@ -6,7 +6,7 @@ import React from "react";
 import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
 import type { LibraryBookItemResponse, SearchBook } from "@/database/types/library";
-import { useBooks } from "@/lib/hooks/use_book";
+import { useBooks } from "@/lib/hooks/use-book";
 import SectionTitle from "../common/section-title";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";

@@ -21,5 +21,5 @@ export interface UsersResponse {
   profile_context: string | null;
   profile_sns: string | null;
   replay_book_sn: string | null;
-  update_date: string;
+  user_update_date: string;
 }
