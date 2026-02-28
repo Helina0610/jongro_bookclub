@@ -3,22 +3,13 @@
 import { DialogClose } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import React from "react";
-import type { BookEntity } from "@/app/(main)/books/page";
 import BookList from "@/components/books/books-list";
-import type { LibraryBookItemResponse, SearchBook } from "@/database/types/library";
+import type { LibraryBookItemResponse } from "@/database/types/library";
 import { useBooks } from "@/lib/hooks/use-book";
 import SectionTitle from "../common/section-title";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Field, FieldGroup } from "../ui/field";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -34,9 +25,8 @@ const WishListSection = () => {
   const [open, setOpen] = React.useState(false);
   const [searchResult, setSearchResult] = React.useState<LibraryBookItemResponse[] | null>(null);
   const [selectedBook, setSelectedBook] = React.useState<LibraryBookItemResponse | null>(null);
-  // const [searchResult, setSearchResult] = React.useState<SearchBook[] | null>(null);
 
-  const { books, loading, error } = useBooks({ wishYn: "Y" });
+  const { books, loading, error, refetch } = useBooks({ wishYn: "Y" });
 
   /* 🔍 검색 API 호출 (mock) */
   const handleSearch = async () => {
@@ -78,30 +68,37 @@ const WishListSection = () => {
 
       {/* 🔍 Search Section */}
       <div className="rounded-md border border-dashed px-4 py-8 sm:px-6 sm:py-12">
-        <h3 className="mb-4 text-lg sm:text-xl font-bold tracking-tight text-center">도서 검색</h3>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // 페이지 새로고침 방지
+            handleSearch();
+          }}
+        >
+          <h3 className="mb-4 text-lg sm:text-xl font-bold tracking-tight text-center">도서 검색</h3>
 
-        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-center">
-          <Select onValueChange={setCondition}>
-            <SelectTrigger className="w-full sm:max-w-40">
-              <SelectValue placeholder="검색조건" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="title">제목</SelectItem>
-                <SelectItem value="author">작가</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-center">
+            <Select onValueChange={setCondition}>
+              <SelectTrigger className="w-full sm:max-w-40">
+                <SelectValue placeholder="검색조건" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="title">제목</SelectItem>
+                  <SelectItem value="author">작가</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
 
-          <input
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="검색어를 입력하세요"
-            className="w-full sm:w-80 rounded-md border px-3 py-2 text-sm"
-          />
+            <input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="검색어를 입력하세요"
+              className="w-full sm:w-80 rounded-md border px-3 py-2 text-sm"
+            />
 
-          <Button onClick={handleSearch}>검색</Button>
-        </div>
+            <Button type="submit">검색</Button>
+          </div>
+        </form>
       </div>
 
       {/* 🔍 검색 결과 */}
@@ -171,7 +168,15 @@ const WishListSection = () => {
         <BookList bookList={books} />
       </div>
 
-      {selectedBook && <WishBookDialog book={selectedBook} open={open} setOpen={setOpen} />}
+      {selectedBook && (
+        <WishBookDialog
+          book={selectedBook}
+          open={open}
+          setOpen={setOpen}
+          onSuccess={refetch}
+          resetSearch={resetSearch}
+        />
+      )}
     </div>
   );
 };
@@ -182,9 +187,11 @@ type WishBookDialogType = {
   book: LibraryBookItemResponse;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess: () => void;
+  resetSearch: () => void;
 };
 
-const WishBookDialog = ({ book, open, setOpen }: WishBookDialogType) => {
+const WishBookDialog = ({ book, open, setOpen, onSuccess, resetSearch }: WishBookDialogType) => {
   // const [open, setOpen] = React.useState(false);
   const [relayBook, setRelayBook] = React.useState<string>();
   const [bookType, setBookType] = React.useState<string>();
@@ -220,6 +227,8 @@ const WishBookDialog = ({ book, open, setOpen }: WishBookDialogType) => {
 
     alert("저장되었습니다");
     setOpen(false); // 🔥 핵심
+    onSuccess();
+    resetSearch();
   };
 
   return (

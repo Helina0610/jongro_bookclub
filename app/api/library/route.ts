@@ -27,7 +27,7 @@ export async function GET(req: Request) {
   baseUrl.searchParams.set("Output", "JS");
   baseUrl.searchParams.set("Cover", "Big");
   baseUrl.searchParams.set("Start", "1");
-  baseUrl.searchParams.set("MaxResults", "10");
+  baseUrl.searchParams.set("MaxResults", "100");
   baseUrl.searchParams.set("QueryType", queryType);
   baseUrl.searchParams.set("Query", query);
 
@@ -42,6 +42,8 @@ export async function GET(req: Request) {
   if (text.endsWith(";")) {
     text = text.slice(0, -1);
   }
+
+  text = text.replace(/\\(?!["\\/bfnrtu])/g, "\\\\");
 
   const data = JSON.parse(text);
 
