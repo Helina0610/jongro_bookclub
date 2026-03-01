@@ -3,6 +3,7 @@ import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React from "react";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,16 +17,17 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
-import type { ReplyResponse } from "@/database/types/reply";
+import type { ReplyUsersResponse } from "@/database/types/reply";
 import { formatDateTime } from "@/lib/utils";
 import { Avatar } from "../ui/avatar";
 import { Button } from "../ui/button";
 
 type ReplyItemType = {
-  reply: ReplyResponse;
+  reply: ReplyUsersResponse;
+  refetch: () => void;
 };
 
-const ReplyItem = ({ reply }: ReplyItemType) => {
+const ReplyItem = ({ reply, refetch }: ReplyItemType) => {
   const [edit, setEdit] = React.useState(false);
   const { data: session } = useSession();
 
@@ -38,6 +40,7 @@ const ReplyItem = ({ reply }: ReplyItemType) => {
         bookSn={reply.book_sn?.toString() ?? ""}
         userSn={session.user.id}
         onSuccess={() => setEdit(false)}
+        refetch={refetch}
       />
     );
   }
@@ -89,11 +92,12 @@ type EditReplyType = {
   bookSn: string;
   parentReplySn?: number; // 대댓글 대비 (옵션)
   userSn: string;
-  reply?: ReplyResponse;
+  reply?: ReplyUsersResponse;
   onSuccess?: () => void;
+  refetch: () => void;
 };
 
-export const EditReply = ({ bookSn, userSn, reply, onSuccess }: EditReplyType) => {
+export const EditReply = ({ bookSn, userSn, reply, onSuccess, refetch }: EditReplyType) => {
   const isEdit = Boolean(reply?.reply_sn);
   const [content, setContent] = React.useState(reply?.reply_content ?? "");
 
@@ -107,7 +111,7 @@ export const EditReply = ({ bookSn, userSn, reply, onSuccess }: EditReplyType) =
     let res: Response;
     if (isEdit) {
       if (!reply) {
-        alert("수정할 댓글 정보가 없습니다.");
+        toast.error("수정할 댓글 정보가 없습니다.", { position: "top-center" });
         return;
       }
 
@@ -125,12 +129,13 @@ export const EditReply = ({ bookSn, userSn, reply, onSuccess }: EditReplyType) =
 
     if (!res.ok) {
       const error = await res.json();
-      alert(error.error ?? "저장 실패");
+      toast.error(error.error ?? "저장 실패", { position: "top-center" });
       return;
     }
 
-    alert(isEdit ? "수정되었습니다" : "등록되었습니다");
+    toast.success(isEdit ? "수정되었습니다" : "등록되었습니다", { position: "top-center" });
     onSuccess?.();
+    refetch();
   };
   return (
     <div>
@@ -149,6 +154,7 @@ export const EditReply = ({ bookSn, userSn, reply, onSuccess }: EditReplyType) =
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Write a comment..."
+                required
               />
               <InputGroupAddon align="block-end">
                 <InputGroupText>0/280</InputGroupText>

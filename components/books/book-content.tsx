@@ -5,8 +5,9 @@ import { useSession } from "next-auth/react";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { ReplyResponse } from "@/database/types/reply";
+import type { ReplyUsersResponse } from "@/database/types/reply";
 import { useBooks } from "@/lib/hooks/use-book";
+import { useReply } from "@/lib/hooks/use-reply";
 import { EditReply } from "../reply/reply-item";
 import ReplyList from "../reply/reply-list";
 import { Button } from "../ui/button";
@@ -17,42 +18,13 @@ type BookContentType = {
 
 const BookContent = ({ bookSn }: BookContentType) => {
   const { data: session } = useSession();
-  const [replyList, setReplyList] = React.useState<ReplyResponse[] | null>();
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<Error | null>(null);
 
   const user_sn = session?.user?.id;
+  const [page, setPage] = React.useState(1);
+  const pageSize = 5;
 
   const { books } = useBooks({ bookSn: bookSn });
-
-  const fetchReply = React.useCallback(async () => {
-    try {
-      const params = new URLSearchParams();
-      params.set("book_sn", bookSn);
-      if (user_sn) params.set("use_sn", user_sn);
-
-      const res = await fetch(`/api/reply?${params.toString()}`, {
-        method: "GET",
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        alert(error.error ?? "저장 실패");
-        return;
-      }
-
-      const replys = await res.json();
-      setReplyList(replys);
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error("Unknown error"));
-    } finally {
-      setLoading(false);
-    }
-  }, [bookSn, user_sn]);
-
-  React.useEffect(() => {
-    fetchReply();
-  }, [fetchReply]);
+  const { replyList, pagination, loading, error, refetch } = useReply<ReplyUsersResponse>({ bookSn, page, pageSize });
 
   if (books.length === 0) return;
   const book = books[0];
@@ -98,10 +70,18 @@ const BookContent = ({ bookSn }: BookContentType) => {
         </div>
       </div>
       {/* 댓글 작성 */}
-      {user_sn && <EditReply bookSn={book.book_sn} userSn={user_sn} />}
+      {user_sn && <EditReply bookSn={book.book_sn} userSn={user_sn} refetch={refetch} />}
 
       {/* 댓글 리스트 */}
-      {replyList && <ReplyList replyList={replyList} />}
+      {replyList && pagination && (
+        <ReplyList
+          replyList={replyList}
+          refetch={refetch}
+          page={page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 };

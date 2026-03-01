@@ -1,41 +1,73 @@
 import { NextResponse } from "next/server";
 import { db } from "@/database/postgres";
 
-export async function GET(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
+// export async function GET(req: Request) {
+//   try {
+//     const { searchParams } = new URL(req.url);
 
-    const book_sn = Number(searchParams.get("book_sn"));
+//     const book_sn = searchParams.get("book_sn");
+//     const user_sn = searchParams.get("user_sn");
 
-    const query = db
-      .selectFrom("bookclub.reply as r")
-      .innerJoin("bookclub.users as u", "r.user_sn", "u.user_sn")
-      .select([
-        "r.reply_sn",
-        "r.reply_content",
-        "r.parent_reply_sn",
-        "r.reply_group_sn",
-        "r.reply_depth",
-        "r.book_sn",
-        "r.user_sn",
-        "r.update_date as reply_update_date",
-        "u.user_name",
-        "u.user_id",
-        "u.profile_image",
-        "u.update_date as user_update_date",
-      ])
-      .where("r.book_sn", "=", book_sn)
-      .orderBy("r.reply_sn", "asc");
+//     let query = db.selectFrom("bookclub.reply as r");
 
-    const replyList = await query.execute();
+//     if (book_sn) {
+//       query = query
+//         .innerJoin("bookclub.books as b", "r.book_sn", "b.book_sn")
+//         .select([
+//           "r.reply_sn",
+//           "r.reply_content",
+//           "r.parent_reply_sn",
+//           "r.reply_group_sn",
+//           "r.reply_depth",
+//           "r.book_sn",
+//           "r.user_sn",
+//           "r.update_date as reply_update_date",
+//           "b.book_sn",
+//           "b.title",
+//           "b.author",
+//           "b.publisher",
+//           "b.book_isbn",
+//           "b.book_cover",
+//           "b.book_description",
+//           "b.book_type",
+//           "b.wish_yn",
+//           "b.rely_book_yn",
+//           "b.book_category",
+//           "b.update_date as book_update_date",
+//         ])
+//         .where("r.book_sn", "=", Number(book_sn))
+//         .orderBy("r.reply_sn", "asc");
+//     }
 
-    return NextResponse.json(replyList);
-  } catch (e) {
-    if (e instanceof Error) {
-      return NextResponse.json({ error: e.message }, { status: 500 });
-    }
-  }
-}
+//     if (user_sn) {
+//       query = query
+//         .innerJoin("bookclub.users as u", "r.user_sn", "u.user_sn")
+//         .select([
+//           "r.reply_sn",
+//           "r.reply_content",
+//           "r.parent_reply_sn",
+//           "r.reply_group_sn",
+//           "r.reply_depth",
+//           "r.book_sn",
+//           "r.user_sn",
+//           "r.update_date as reply_update_date",
+//           "u.user_name",
+//           "u.user_id",
+//           "u.profile_image",
+//           "u.update_date as user_update_date",
+//         ])
+//         .where("r.user_sn", "=", Number(user_sn))
+//         .orderBy("r.reply_sn", "asc");
+//     }
+
+//     const replyList = await query.execute();
+//     return NextResponse.json(replyList);
+//   } catch (e) {
+//     if (e instanceof Error) {
+//       return NextResponse.json({ error: e.message }, { status: 500 });
+//     }
+//   }
+// }
 
 export async function POST(req: Request) {
   try {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import React from "react";
+import { toast } from "sonner";
 import type { UsersResponse } from "@/database/types/users";
 import { Button } from "../ui/button";
 import { Field, FieldLabel } from "../ui/field";
@@ -103,11 +104,11 @@ const EditProfile = ({ user, onCancel, onSaved }: EditProfileType) => {
     });
     if (!res.ok) {
       const error = await res.json();
-      alert(error.error ?? "저장 실패");
+      toast.error(error.error ?? "저장 실패", { position: "top-center" });
       return;
     }
 
-    alert("저장되었습니다");
+    toast.success("저장되었습니다", { position: "top-center" });
     onCancel(false); // 🔥 핵심
     await onSaved();
   };

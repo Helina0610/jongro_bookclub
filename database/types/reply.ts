@@ -1,4 +1,5 @@
 import type { ColumnType, Generated } from "kysely";
+import type { BooksResponse } from "./books";
 import type { UsersResponse } from "./users";
 
 export type ReplyTable = {
@@ -12,13 +13,24 @@ export type ReplyTable = {
   update_date: ColumnType<Date, Date, Date>;
 };
 
-export interface ReplyResponse extends UsersResponse {
+export interface ReplyUsersResponse extends UsersResponse {
   reply_sn: number;
   reply_content: string | null;
   parent_reply_sn: number | null;
   reply_group_sn: number | null;
   reply_depth: number | null;
   book_sn: number | null;
+  user_sn: string;
+  reply_update_date: string;
+}
+
+export interface ReplyBooksResponse extends BooksResponse {
+  reply_sn: number;
+  reply_content: string | null;
+  parent_reply_sn: number | null;
+  reply_group_sn: number | null;
+  reply_depth: number | null;
+  reply_book_sn: number | null;
   user_sn: string;
   reply_update_date: string;
 }

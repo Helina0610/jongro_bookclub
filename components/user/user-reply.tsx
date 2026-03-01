@@ -1,52 +1,56 @@
+"use client";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import React from "react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import type { ReplyBooksResponse } from "@/database/types/reply";
+import { useReply } from "@/lib/hooks/use-reply";
+import PaginationComponent from "@/lib/pagination-component";
+import { formatDateTime } from "@/lib/utils";
 
 const UserReply = () => {
+  const { data: session } = useSession();
+  const user_sn = session?.user?.id;
+
+  const [page, setPage] = React.useState(1);
+  const pageSize = 5;
+
+  const { replyList, pagination, loading, error } = useReply<ReplyBooksResponse>({
+    userSn: user_sn,
+    page,
+    pageSize,
+  });
+
+  if (loading) return <p>로딩 중...</p>;
+  if (error) return <p className="text-red-500">{error.message}</p>;
+  if (!replyList || replyList.length === 0) return <p>댓글이 없습니다.</p>;
+
   return (
     <Card>
       <CardTitle className="px-6 pt-6">My Log</CardTitle>
 
       <CardContent className="space-y-4">
-        {/* Log Item */}
-        <div className="flex gap-4 rounded-lg border p-3 hover:bg-muted/50 transition">
-          {/* Book Cover */}
-          <div className="relative w-20 shrink-0 overflow-hidden rounded-md aspect-2/3">
-            <Image src="/bookcover/눈과돌멩이.jpg" alt="눈과돌멩이" fill className="object-cover" />
-          </div>
+        {replyList.map((reply) => (
+          <div key={reply.reply_sn} className="flex gap-4 rounded-lg border p-3 hover:bg-muted/50 transition">
+            <div className="relative w-20 shrink-0 overflow-hidden rounded-md aspect-2/3">
+              <Image
+                src={reply.book_cover || "/bookcover/default.jpg"}
+                alt={reply.title ?? ""}
+                fill
+                className="object-cover"
+              />
+            </div>
 
-          {/* Log Content */}
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-medium">눈과 돌멩이</div>
-            <p className="text-sm text-muted-foreground line-clamp-4 h-2/3">
-              Nulla dolor velit adipisicing duis excepteur esse in duis nostrud occaecat mollit incididunt deserunt
-              sunt. Ut ut sunt laborum ex occaecat eu tempor labore enim adipisicing minim ad. Est in quis eu dolore
-              occaecat excepteur fugiat dolore nisi aliqua fugiat enim ut cillum. Labore enim duis nostrud eu. Est ut
-              eiusmod consequat irure quis deserunt ex. Enim laboris dolor magna pariatur. Dolor et ad sint voluptate
-              sunt elit mollit officia ad enim sit consectetur enim.
-            </p>
-            <span className="text-xs text-muted-foreground">2026-02-01</span>
+            <div className="flex flex-col gap-1">
+              <div className="text-sm font-medium">{reply.title}</div>
+              <p className="text-sm text-muted-foreground line-clamp-4">{reply.reply_content}</p>
+              <span className="text-xs text-muted-foreground">{formatDateTime(reply.reply_update_date)}</span>
+            </div>
           </div>
-        </div>
+        ))}
 
-        {/* Log Item 2 */}
-        <div className="flex gap-4 rounded-lg border p-3 hover:bg-muted/50 transition">
-          <div className="relative w-20 shrink-0 overflow-hidden rounded-md aspect-2/3">
-            <Image src="/bookcover/우아한유령.jpg" alt="우아한유령" fill className="object-cover" />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <div className="text-sm font-medium">눈과 돌멩이</div>
-            <p className="text-sm text-muted-foreground line-clamp-4 h-2/3">
-              Nulla dolor velit adipisicing duis excepteur esse in duis nostrud occaecat mollit incididunt deserunt
-              sunt. Ut ut sunt laborum ex occaecat eu tempor labore enim adipisicing minim ad. Est in quis eu dolore
-              occaecat excepteur fugiat dolore nisi aliqua fugiat enim ut cillum. Labore enim duis nostrud eu. Est ut
-              eiusmod consequat irure quis deserunt ex. Enim laboris dolor magna pariatur. Dolor et ad sint voluptate
-              sunt elit mollit officia ad enim sit consectetur enim.
-            </p>
-            <span className="text-xs text-muted-foreground">2026-02-02</span>
-          </div>
-        </div>
+        {/* Pagination */}
+        {pagination && <PaginationComponent page={page} totalPages={pagination.totalPages} onPageChange={setPage} />}
       </CardContent>
     </Card>
   );

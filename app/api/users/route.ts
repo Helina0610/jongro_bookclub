@@ -125,8 +125,6 @@ export async function PUT(req: Request) {
       updateValues.profile_sns = profile_sns;
     }
 
-    console.log(updateValues);
-
     await db.updateTable("bookclub.users").set(updateValues).where("bookclub.users.user_sn", "=", user_sn).execute();
 
     return Response.json({ message: "User updated" }, { status: 200 });

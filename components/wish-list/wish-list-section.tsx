@@ -3,6 +3,7 @@
 import { DialogClose } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import React from "react";
+import { toast } from "sonner";
 import BookList from "@/components/books/books-list";
 import type { LibraryBookItemResponse } from "@/database/types/library";
 import { useBooks } from "@/lib/hooks/use-book";
@@ -200,7 +201,7 @@ const WishBookDialog = ({ book, open, setOpen, onSuccess, resetSearch }: WishBoo
     e.preventDefault();
 
     if (!bookType) {
-      alert("장르를 선택해 주세요");
+      toast.warning("장르를 선택해 주세요", { position: "top-center" });
       return;
     }
 
@@ -221,11 +222,11 @@ const WishBookDialog = ({ book, open, setOpen, onSuccess, resetSearch }: WishBoo
 
     if (!res.ok) {
       const error = await res.json();
-      alert(error.error ?? "저장 실패");
+      toast.error(error.error ?? "저장 실패", { position: "top-center" });
       return;
     }
 
-    alert("저장되었습니다");
+    toast.success("저장되었습니다", { position: "top-center" });
     setOpen(false); // 🔥 핵심
     onSuccess();
     resetSearch();

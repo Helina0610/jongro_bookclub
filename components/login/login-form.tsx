@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import React from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -89,7 +90,7 @@ const NewSignUpDiv = ({ setAddUser }: loginDivType) => {
     const confirm = formData.get("confirm_pw");
 
     if (password !== confirm) {
-      alert("비밀번호가 일치하지 않습니다.");
+      toast.info("비밀번호가 일치하지 않습니다.", { position: "top-center" });
       return;
     }
 
